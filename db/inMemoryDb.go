@@ -20,9 +20,6 @@ type InMemoryDb struct {
 
 // Connect creates the database connection
 func (imd *InMemoryDb) Connect() bool {
-	if imd.connected {
-		return true
-	}
 	imd.store = make(map[string]interface{})
 	imd.connected = true
 	imd.idGeneratorCount = 0
@@ -32,15 +29,15 @@ func (imd *InMemoryDb) Connect() bool {
 	return true
 }
 
+// Connected returns the connection status
+func (imd *InMemoryDb) Connected() bool {
+	return imd.connected
+}
+
 // Disconnect closes the database connection
 func (imd *InMemoryDb) Disconnect() {
 	imd.connected = false
 	return
-}
-
-// Connected returns the connection status
-func (imd *InMemoryDb) Connected() bool {
-	return imd.connected
 }
 
 // Create adds a new object to the database and returns the id of the newly created object

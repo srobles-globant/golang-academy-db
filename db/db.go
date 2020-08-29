@@ -11,11 +11,11 @@ type Db interface {
 	// Connect creates the database connection
 	Connect() bool
 
-	// Disconnect closes the database connection
-	Disconnect()
-
 	// Connected returns the connection status
 	Connected() bool
+
+	// Disconnect closes the database connection
+	Disconnect()
 
 	// Create adds a new object to the database and returns the id of the newly created object
 	Create(interface{}) (string, bool)
