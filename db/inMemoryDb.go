@@ -37,7 +37,6 @@ func (imd *InMemoryDb) Connected() bool {
 // Disconnect closes the database connection
 func (imd *InMemoryDb) Disconnect() {
 	imd.connected = false
-	return
 }
 
 // Create adds a new object to the database and returns the id of the newly created object
