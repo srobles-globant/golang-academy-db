@@ -1,6 +1,4 @@
-/*
-Package db exposes a very simple database with different implementations
-*/
+// Package db exposes a very simple database with different implementations
 package db
 
 import (
@@ -9,9 +7,7 @@ import (
 	"os"
 )
 
-/*
-FileDb is the implementation of the Db interface in a map[string]interface{} type and file persistance
-*/
+// FileDb is the implementation of the Db interface in a map[string]interface{} type and file persistance
 type FileDb struct {
 	FilePath string
 

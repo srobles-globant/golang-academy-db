@@ -1,6 +1,4 @@
-/*
-Package db exposes a very simple database with different implementations
-*/
+// Package db exposes a very simple database with different implementations
 package db
 
 import (
@@ -8,9 +6,7 @@ import (
 	"sync"
 )
 
-/*
-InMemoryDb is the implementation of the Db interface in a map[string]interface{} type
-*/
+// InMemoryDb is the implementation of the Db interface in a map[string]interface{} type
 type InMemoryDb struct {
 	store      map[string]interface{}
 	connected  bool
