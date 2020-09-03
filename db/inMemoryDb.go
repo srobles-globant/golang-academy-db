@@ -1,31 +1,27 @@
-/*
-Package db exposes a very simple database with different implementations
-*/
+// Package db exposes a very simple database with different implementations
 package db
 
 import (
 	"fmt"
+	"sync"
 )
 
-/*
-InMemoryDb is the implementation of the Db interface in a map[string]interface{} type
-*/
+// InMemoryDb is the implementation of the Db interface in a map[string]interface{} type
 type InMemoryDb struct {
-	IDGeneratorPrefix string
-
-	store            map[string]interface{}
-	connected        bool
-	idGeneratorCount int
+	store      map[string]interface{}
+	connected  bool
+	idGenCount int
+	mux        sync.Mutex
 }
 
 // Connect creates the database connection
 func (imd *InMemoryDb) Connect() bool {
+	if imd.connected {
+		return false
+	}
 	imd.store = make(map[string]interface{})
 	imd.connected = true
-	imd.idGeneratorCount = 0
-	if imd.IDGeneratorPrefix == "" {
-		imd.IDGeneratorPrefix = "obj"
-	}
+	imd.idGenCount = 0
 	return true
 }
 
@@ -44,9 +40,11 @@ func (imd *InMemoryDb) Create(obj interface{}) (string, bool) {
 	if !imd.connected {
 		return "", false
 	}
-	id := fmt.Sprintf("%s%d", imd.IDGeneratorPrefix, imd.idGeneratorCount)
-	imd.idGeneratorCount++
+	imd.mux.Lock()
+	id := fmt.Sprintf("%d", imd.idGenCount)
+	imd.idGenCount++
 	imd.store[id] = obj
+	imd.mux.Unlock()
 	return id, true
 }
 
@@ -67,7 +65,9 @@ func (imd *InMemoryDb) Update(id string, obj interface{}) bool {
 	if _, ok := imd.store[id]; !ok {
 		return false
 	}
+	imd.mux.Lock()
 	imd.store[id] = obj
+	imd.mux.Unlock()
 	return true
 }
 
@@ -79,6 +79,8 @@ func (imd *InMemoryDb) Delete(id string) bool {
 	if _, ok := imd.store[id]; !ok {
 		return false
 	}
+	imd.mux.Lock()
 	delete(imd.store, id)
+	imd.mux.Unlock()
 	return true
 }

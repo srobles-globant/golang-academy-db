@@ -12,6 +12,7 @@ func TestConnection(t *testing.T) {
 		dbImp db.Db
 	}{
 		{name: "connection to InMemoryDB", dbImp: &db.InMemoryDb{}},
+		{name: "connection to FileDB", dbImp: &db.FileDb{FilePath: "./test.db"}},
 	}
 
 	for _, c := range cases {
@@ -21,9 +22,14 @@ func TestConnection(t *testing.T) {
 					t.Errorf("expected connected state to be %t but got %t", false, state)
 				}
 			})
-			t.Run("connect operation", func(t *testing.T) {
+			t.Run("connect operation success", func(t *testing.T) {
 				if ok := c.dbImp.Connect(); !ok {
 					t.Errorf("expected to return %t but got %t", true, ok)
+				}
+			})
+			t.Run("connect operation failure", func(t *testing.T) {
+				if ok := c.dbImp.Connect(); ok {
+					t.Errorf("expected to return %t but got %t", false, ok)
 				}
 			})
 			t.Run("connected state", func(t *testing.T) {

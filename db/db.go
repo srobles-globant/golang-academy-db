@@ -1,11 +1,7 @@
-/*
-Package db exposes a very simple database with different implementations
-*/
+// Package db exposes a very simple database with different implementations
 package db
 
-/*
-Db defines the base interface for using de database. Most of the methods return a bool that indicates the success of the operation.
-*/
+// Db defines the base interface for using de database. Most of the methods return a bool that indicates the success of the operation.
 type Db interface {
 
 	// Connect creates the database connection
