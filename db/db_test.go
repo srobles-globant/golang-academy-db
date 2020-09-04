@@ -1,6 +1,7 @@
 package db_test
 
 import (
+	"os"
 	"testing"
 
 	"github.com/srobles-globant/golang-academy-db/db"
@@ -8,15 +9,27 @@ import (
 
 func TestConnection(t *testing.T) {
 	cases := []struct {
-		name  string
-		dbImp db.Db
+		name        string
+		dbImp       db.Db
+		cleanUpFunc func()
 	}{
-		{name: "connection to InMemoryDB", dbImp: &db.InMemoryDb{}},
-		{name: "connection to FileDB", dbImp: &db.FileDb{FilePath: "./test.db"}},
+		{
+			name:        "connection to InMemoryDB",
+			dbImp:       &db.InMemoryDb{},
+			cleanUpFunc: func() {},
+		},
+		{
+			name:  "connection to FileDB",
+			dbImp: &db.FileDb{FilePath: os.TempDir() + "/test.db"},
+			cleanUpFunc: func() {
+				os.Remove(os.TempDir() + "/test.db")
+			},
+		},
 	}
 
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
+			defer c.cleanUpFunc()
 			t.Run("start not connected", func(t *testing.T) {
 				if state := c.dbImp.Connected(); state {
 					t.Errorf("expected connected state to be %t but got %t", false, state)
@@ -49,14 +62,27 @@ func TestConnection(t *testing.T) {
 
 func TestCRUD(t *testing.T) {
 	cases := []struct {
-		name  string
-		dbImp db.Db
+		name        string
+		dbImp       db.Db
+		cleanUpFunc func()
 	}{
-		{name: "CRUD operations with InMemoryDB", dbImp: &db.InMemoryDb{}},
+		{
+			name:        "CRUD operations with InMemoryDB",
+			dbImp:       &db.InMemoryDb{},
+			cleanUpFunc: func() {},
+		},
+		{
+			name:  "CRUD operations with FileDB",
+			dbImp: &db.FileDb{FilePath: os.TempDir() + "/test.db"},
+			cleanUpFunc: func() {
+				os.Remove(os.TempDir() + "/test.db")
+			},
+		},
 	}
 
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
+			defer c.cleanUpFunc()
 			var id string
 			var ok bool
 			var readObj interface{}
