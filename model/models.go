@@ -17,13 +17,13 @@ type Item struct {
 
 // Article struct
 type Article struct {
-	ID    int     `json:"id"`
+	ID    int     `json:"id,string"`
 	Title string  `json:"title"`
-	Price float32 `json:"price"`
+	Price float32 `json:"price,string"`
 }
 
 // ApiResponse struct
 type ApiResponse struct {
 	Message string      `json:"message"`
-	Data    interface{} `json:"data"`
+	Data    interface{} `json:"data,omitempty"`
 }

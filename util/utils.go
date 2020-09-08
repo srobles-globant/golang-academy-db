@@ -21,7 +21,7 @@ func GetArticles() ([]model.Article, error) {
 	if err != nil {
 		return nil, err
 	}
-	var articles []model.Article
+	articles := make([]model.Article, 0)
 	err = json.Unmarshal(articlesBytes, &articles)
 	if err != nil {
 		return nil, err
@@ -40,10 +40,10 @@ func GetArticle(articleID int) (*model.Article, error) {
 	if err != nil {
 		return nil, err
 	}
-	var article *model.Article
-	err = json.Unmarshal(articleBytes, article)
+	article := model.Article{}
+	err = json.Unmarshal(articleBytes, &article)
 	if err != nil {
 		return nil, err
 	}
-	return article, nil
+	return &article, nil
 }
