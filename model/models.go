@@ -21,3 +21,9 @@ type Article struct {
 	Title string  `json:"title"`
 	Price float32 `json:"price"`
 }
+
+// ApiResponse struct
+type ApiResponse struct {
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
+}

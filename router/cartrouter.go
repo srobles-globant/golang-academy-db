@@ -2,6 +2,8 @@
 package router
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"log"
 	"net/http"
 
@@ -32,7 +34,28 @@ func NewCartRouter(cs CartService) *CartRouter {
 
 // Create a new cart
 func (cr *CartRouter) createCart(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	log.Println("create a cart")
+	log.Println("=== create a cart ===")
+	w.Header().Set("Content-Type", "application/json")
+	b, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		processError(w, err, http.StatusInternalServerError, "Error processing the request")
+		return
+	}
+	log.Println("body:\n" + string(b))
+	var cart *model.Cart
+	err = json.Unmarshal(b, cart)
+	if err != nil {
+		processError(w, err, http.StatusBadRequest, "Malformed JSON")
+		return
+	}
+	id, err := cr.cs.CreateCart(cart)
+	responseBody := model.ApiResponse{
+		Message: "Cart created",
+		Data:    struct{ id int }{id: id},
+	}
+	responseData, _ := json.Marshal(responseBody)
+	w.WriteHeader(http.StatusCreated)
+	w.Write(responseData)
 }
 
 // Get a cart
@@ -78,4 +101,12 @@ func (cr *CartRouter) CreateRouter() *httprouter.Router {
 	router.DELETE("/carts/:cart/items", cr.clearCart)
 
 	return router
+}
+
+func processError(w http.ResponseWriter, err error, statusCode int, message string) {
+	responseBody := model.ApiResponse{Message: message}
+	log.Println(err)
+	responseData, _ := json.Marshal(responseBody)
+	w.WriteHeader(statusCode)
+	w.Write(responseData)
 }
