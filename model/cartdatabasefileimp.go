@@ -36,19 +36,26 @@ func (cd *CartDatabaseFileImp) GetCart(id int) (*Cart, error) {
 	if c, ok := cd.db.Retrieve(fmt.Sprintf("%d", id)); ok {
 		cartv, ok2 := c.(Cart)
 		if ok2 {
+			cartv.ID = id
+			if cartv.Items == nil {
+				cartv.Items = make([]Item, 0)
+			}
 			return &cartv, nil
 		}
 		b, err := json.Marshal(c)
 		if err != nil {
 			return nil, fmt.Errorf("db: error retrieving the Cart %d. %w", id, err)
 		}
-		var cartp *Cart
-		err = json.Unmarshal(b, cartp)
+		var cartp Cart
+		err = json.Unmarshal(b, &cartp)
 		if err != nil {
 			return nil, fmt.Errorf("db: error retrieving the Cart %d. %w", id, err)
 		}
 		cartp.ID = id
-		return cartp, nil
+		if cartp.Items == nil {
+			cartp.Items = make([]Item, 0)
+		}
+		return &cartp, nil
 	}
 	return nil, fmt.Errorf("db: error retrieving the Cart %d", id)
 }

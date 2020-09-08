@@ -27,6 +27,7 @@ func NewCartServiceImp(cd CartDatabase) *CartServiceImp {
 
 // CreateCart creates a new cart
 func (cs *CartServiceImp) CreateCart(cart *model.Cart) (int, error) {
+	cart.Items = nil
 	return cs.cd.CreateCart(cart)
 }
 
@@ -41,8 +42,16 @@ func (cs *CartServiceImp) AddItems(cartID int, items []model.Item) error {
 	if err != nil {
 		return err
 	}
-	nextID := cart.Items[len(cart.Items)-1].ID + 1
+	var nextID int
+	if lastIndex := len(cart.Items) - 1; lastIndex < 0 {
+		nextID = 0
+	} else {
+		nextID = cart.Items[len(cart.Items)-1].ID + 1
+	}
 	for _, item := range items {
+		if item.Quantity <= 0 {
+			continue
+		}
 		if itemSliceHasArticle(cart.Items, item.ArticleID) {
 			continue
 		}
