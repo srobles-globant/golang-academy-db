@@ -10,10 +10,9 @@ type Cart struct {
 
 // Item struct
 type Item struct {
-	ID        int      `json:"id"`
-	ArticleID int      `json:"articleId"`
-	Article   *Article `json:"-"`
-	Quantity  int      `json:"quantity"`
+	ID        int `json:"id"`
+	ArticleID int `json:"articleId"`
+	Quantity  int `json:"quantity"`
 }
 
 // Article struct
@@ -21,4 +20,10 @@ type Article struct {
 	ID    int     `json:"id"`
 	Title string  `json:"title"`
 	Price float32 `json:"price"`
+}
+
+// ApiResponse struct
+type ApiResponse struct {
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
 }

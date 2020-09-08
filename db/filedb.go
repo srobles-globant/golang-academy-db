@@ -39,7 +39,7 @@ func (fd *FileDb) Connect() bool {
 		fd.store = make(map[string]interface{})
 	} else {
 		json.Unmarshal(data, &fd.store)
-		fd.idGenCount = fd.store["count"].(int)
+		fd.idGenCount = int(fd.store["count"].(float64))
 	}
 
 	fd.connected = true
