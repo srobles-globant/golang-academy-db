@@ -10,10 +10,9 @@ type Cart struct {
 
 // Item struct
 type Item struct {
-	ID        int      `json:"id"`
-	ArticleID int      `json:"articleId"`
-	Article   *Article `json:"-"`
-	Quantity  int      `json:"quantity"`
+	ID        int `json:"id"`
+	ArticleID int `json:"articleId"`
+	Quantity  int `json:"quantity"`
 }
 
 // Article struct

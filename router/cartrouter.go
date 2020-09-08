@@ -11,7 +11,7 @@ import (
 
 // CartService defines the methods to handle Carts
 type CartService interface {
-	CreateCart(cart *model.Cart) error
+	CreateCart(cart *model.Cart) (int, error)
 	GetCart(cartID int) (*model.Cart, error)
 	AddItems(cartID int, items []model.Item) error
 	ListItems(cartID int) ([]model.Item, error)
